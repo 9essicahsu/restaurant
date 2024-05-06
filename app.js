@@ -14,7 +14,16 @@ app.get('/', (req, res) => {
 })
 
 app.get('/restaurants', (req, res) => {
-  res.render('index', { restaurants: restaurants })
+  const findKeyword = req.query.keyword?.trim()
+  const matchedRestaurant = findKeyword ? restaurants.filter((r) => 
+    Object.keys(r).some((property) => {
+      if (property === 'name' || property === 'category') {
+        return r[property].toLowerCase().includes(findKeyword.toLowerCase())
+      }
+      return false
+    })
+  ) : restaurants
+  res.render('index', { restaurants: matchedRestaurant, findKeyword })
 })
 
 app.get('/restaurants/:id', (req, res) => {
